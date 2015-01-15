@@ -8,7 +8,7 @@ function MonthView(element, calendar) {
 	// exports
 	t.incrementDate = incrementDate;
 	t.render = render;
-	
+	t.renderAnnotations = function() {};
 	
 	// imports
 	BasicView.call(t, element, calendar, 'month');

@@ -264,6 +264,8 @@ function Calendar(element, instanceOptions) {
 	var date;
 	var events = [];
 	var _dragElement;
+
+	var annotations = t.options.annotations;
 	
 	
 	
@@ -545,6 +547,9 @@ function Calendar(element, instanceOptions) {
 	function renderEvents(modifiedEventID) { // TODO: remove modifiedEventID hack
 		if (elementVisible()) {
 			currentView.renderEvents(events, modifiedEventID); // actually render the DOM elements
+			if(typeof currentView.renderAnnotations === 'function') {
+				currentView.renderAnnotations(annotations);
+			}
 			currentView.trigger('eventAfterAllRender');
 		}
 	}
