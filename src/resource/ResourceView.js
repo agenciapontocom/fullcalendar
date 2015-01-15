@@ -44,6 +44,7 @@ function ResourceView(element, calendar, viewName) {
 	t.colContentRight = colContentRight;
 	t.getDaySegmentContainer = function() { return daySegmentContainer; };
 	t.getSlotSegmentContainer = function() { return slotSegmentContainer; };
+	t.getAnnotationSegmentContainer = function() { return annotationSegmentContainer; };
 	t.getSlotContainer = function() { return slotContainer; };
 	t.getRowCnt = function() { return 1; };
 	t.getColCnt = function() { return 1; };
@@ -62,6 +63,7 @@ function ResourceView(element, calendar, viewName) {
 	t.dragStart = dragStart;
 	t.dragStop = dragStop;
 	t.getResources = calendar.fetchResources;
+	t.renderAnnotations = renderAnnotations;
 	
 	// imports
 	View.call(t, element, calendar, viewName);
@@ -133,6 +135,8 @@ function ResourceView(element, calendar, viewName) {
 	var maxTime;
 	var colFormat;
 	var resources = t.getResources;
+
+	var annotationSegmentContainer;
 	
 	/* Rendering
 	-----------------------------------------------------------------------------*/
@@ -236,6 +240,10 @@ function ResourceView(element, calendar, viewName) {
 				
 		slotSegmentContainer =
 			$("<div class='fc-event-container' style='position:absolute;z-index:8;top:0;left:0'/>")
+				.appendTo(slotContainer);
+
+		annotationSegmentContainer =
+			$("<div class='slot-segment-container' style='position:absolute;z-index:-1;top:0;left:0'/>")
 				.appendTo(slotContainer);
 		
 		s =
@@ -345,11 +353,11 @@ function ResourceView(element, calendar, viewName) {
 
 		for (col=0; col<colCnt; col++) {
 		  var resource = resources()[col];
-
 		  var classNames = [ // added
 	          'fc-col' + col,
 	          resource.className,
-	          headerClass
+	          headerClass,
+	          'resource-id' + resource.id
 	        ];
 
 	      html +=
@@ -646,6 +654,66 @@ function ResourceView(element, calendar, viewName) {
 			slotBind(
 				renderOverlay(rect, slotContainer)
 			);
+		}
+	}
+
+	/* Render annotations
+	-----------------------------------------------------------------------------*/
+	function renderAnnotations(annotations) {
+		var html = '';
+		for (var i=0; i < annotations.length; i++) {
+			var ann = annotations[i];
+			if(ann.resources instanceof Array){
+				for(var j=0; j < ann.resources.length; j++){
+					var resource = ann.resources[j];
+					var dayIndex = getIndexOfResource(resource);
+					
+					if(dayIndex !== undefined){
+						var top = computeTimeTop(moment.duration(ann.start));
+						var bottom = computeTimeTop(moment.duration(ann.end));
+						var height = bottom - top;
+				
+						var left = colContentLeft(dayIndex) - 2;
+						var right = colContentRight(dayIndex) + 3;
+						var width = right - left;
+
+						var cls = '';
+						if (ann.cls) {
+							cls = ' ' + ann.cls;
+						}
+
+						var colors = '';
+						if (ann.color) {
+							colors = 'color:' + ann.color + ';';
+						}
+						if (ann.background) {
+							colors += 'background:' + ann.background + ';';
+						}
+
+						var body = ann.title || '';
+
+						html += '<div style="position: absolute; ' +
+							'top: ' + top + 'px; ' +
+							'left: ' + left + 'px; ' +
+							'width: ' + width + 'px; ' +
+							'height: ' + height + 'px;' + colors + '" ' +
+							'class="fc-annotation fc-annotation-skin' + cls + '">' +
+							body +
+							'</div>';
+					}
+				}
+			}
+		}
+		annotationSegmentContainer[0].innerHTML = html;
+	}
+	
+	function getIndexOfResource(resource) {
+		var getResources = t.getResources;
+		var res = getResources();
+		for(var i=0; i < res.length; i++){
+			if(resource == res[i].id){
+				return i;
+			}
 		}
 	}
 	
