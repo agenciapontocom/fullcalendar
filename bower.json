@@ -23,10 +23,10 @@
     "/dist/fullcalendar.css"
   ],
   "ignore": [
-    "demos"
-    "lib"
-    "src"
-    "tests"
+    "demos",
+    "lib",
+    "src",
+    "tests",
     "lumbar.json"
   ]
 }
