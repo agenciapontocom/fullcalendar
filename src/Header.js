@@ -89,39 +89,51 @@ function Header(calendar, options) {
 								html = htmlEscape(defaultText || buttonName);
 							}
 
-							var button = $(
-								"<span class='fc-button fc-button-" + buttonName + " " + tm + "-state-default'>" +
-									html +
-								"</span>"
-								)
-								.click(function() {
-									if (!button.hasClass(tm + '-state-disabled')) {
-										buttonClick();
-									}
-								})
-								.mousedown(function() {
-									button
-										.not('.' + tm + '-state-active')
-										.not('.' + tm + '-state-disabled')
-										.addClass(tm + '-state-down');
-								})
-								.mouseup(function() {
-									button.removeClass(tm + '-state-down');
-								})
-								.hover(
-									function() {
+							var button;
+							if(buttonName == 'datePicker'){
+								button = $("<input type='image' src='images/calendar.gif'>");
+								button.datepicker({
+									onSelect: function(dateText, inst) {
+						                        var date = new Date(dateText);
+						                        calendar.gotoDate(date);
+						                }
+								});
+								button.appendTo(e);
+							}else{
+								button = $(
+									"<span class='fc-button fc-button-" + buttonName + " " + tm + "-state-default'>" +
+										html +
+									"</span>"
+									)
+									.click(function() {
+										if (!button.hasClass(tm + '-state-disabled')) {
+											buttonClick();
+										}
+									})
+									.mousedown(function() {
 										button
 											.not('.' + tm + '-state-active')
 											.not('.' + tm + '-state-disabled')
-											.addClass(tm + '-state-hover');
-									},
-									function() {
-										button
-											.removeClass(tm + '-state-hover')
-											.removeClass(tm + '-state-down');
-									}
-								)
-								.appendTo(e);
+											.addClass(tm + '-state-down');
+									})
+									.mouseup(function() {
+										button.removeClass(tm + '-state-down');
+									})
+									.hover(
+										function() {
+											button
+												.not('.' + tm + '-state-active')
+												.not('.' + tm + '-state-disabled')
+												.addClass(tm + '-state-hover');
+										},
+										function() {
+											button
+												.removeClass(tm + '-state-hover')
+												.removeClass(tm + '-state-down');
+										}
+									);
+								button.appendTo(e);
+							}
 							disableTextSelection(button);
 							if (!prevButton) {
 								button.addClass(tm + '-corner-left');

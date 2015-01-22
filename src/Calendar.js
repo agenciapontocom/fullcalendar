@@ -57,6 +57,7 @@ function Calendar(element, instanceOptions) {
 	t.getView = getView;
 	t.option = option;
 	t.trigger = trigger;
+	t.datePicker = datePicker;
 
 
 
@@ -662,7 +663,6 @@ function Calendar(element, instanceOptions) {
 		renderView();
 	}
 	
-	
 	function gotoDate(dateInput) {
 		date = t.moment(dateInput);
 		renderView();
@@ -671,6 +671,12 @@ function Calendar(element, instanceOptions) {
 	
 	function incrementDate(delta) {
 		date.add(moment.duration(delta));
+		renderView();
+	}
+
+	function datePicker(dateInput) {
+		var date = new Date(dateInput);
+		date = t.moment(date);
 		renderView();
 	}
 	

@@ -23,12 +23,10 @@
     "/dist/fullcalendar.css"
   ],
   "ignore": [
-    "*",
-    "**/.*",
-    "!/dist/**",
-    "!/bower.json",
-    "!/changelog.*",
-    "!/license.*",
-    "!/readme.*"
+    "demos"
+    "lib"
+    "src"
+    "tests"
+    "lumbar.json"
   ]
 }
