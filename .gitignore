@@ -1,6 +1,8 @@
 build/temp
 #dist
 # dist/*
+dist/lang/*
+dist/cdnjs/*
 # npm modules
 node_modules
 
